@@ -3,6 +3,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
+@allure.step("Проверка адреса сайта")
+def check_tensor_site_address(chrome):
+    assert "tensor.ru" in chrome.current_url
+
+
 @allure.step("Проверка слогана")
 def check_tensor_main_page_slogan(tensor_main_page):
     logger.info("Проверка слогана на главной странице")

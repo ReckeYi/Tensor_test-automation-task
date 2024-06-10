@@ -1,10 +1,7 @@
 import allure
-import logging
 
 from pages.checkout_pages.check_sbis_contacts_page import check_partners_list_changed
 from pages.sbis_contacts_page import SbisContactsPage
-
-logger = logging.getLogger(__name__)
 
 
 @allure.feature("Регионы")

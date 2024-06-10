@@ -1,19 +1,10 @@
-import logging
 import allure
 
-from pages.checkout_pages.check_tensor_about_page import check_tensor_about_page_work_header, \
-    check_tensor_about_page_images
-from pages.checkout_pages.check_tensor_main_page import check_tensor_main_page_slogan, check_tensor_main_page_link
+from pages.checkout_pages.check_tensor_about_page import *
+from pages.checkout_pages.check_tensor_main_page import *
 from pages.sbis_contacts_page import SbisContactsPage
 from pages.tensor_about_page import TensorAboutPage
 from pages.tensor_main_page import TensorMainPage
-
-
-logger = logging.getLogger(__name__)
-
-
-def check_tensor_site_address(chrome):
-    pass
 
 
 @allure.feature("Размер изображений")
