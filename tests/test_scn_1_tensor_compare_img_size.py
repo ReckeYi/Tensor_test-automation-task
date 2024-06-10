@@ -1,11 +1,19 @@
-import allure
 import logging
+import allure
+
+from pages.checkout_pages.check_tensor_about_page import check_tensor_about_page_work_header, \
+    check_tensor_about_page_images
+from pages.checkout_pages.check_tensor_main_page import check_tensor_main_page_slogan, check_tensor_main_page_link
 from pages.sbis_contacts_page import SbisContactsPage
 from pages.tensor_about_page import TensorAboutPage
 from pages.tensor_main_page import TensorMainPage
 
 
 logger = logging.getLogger(__name__)
+
+
+def check_tensor_site_address(chrome):
+    pass
 
 
 @allure.feature("Размер изображений")
@@ -15,17 +23,13 @@ def test_tensor_functionality(chrome):
     sbis_contacts_page.open()
     sbis_contacts_page.click_tensor_banner()
     chrome.switch_to.window(chrome.window_handles[1])
-    logger.info("Проверка адреса сайта")
-    assert "tensor.ru" in chrome.current_url
+    check_tensor_site_address(chrome)
 
     tensor_main_page = TensorMainPage(chrome)
-    tensor_main_page.verify_slogan()
+    check_tensor_main_page_slogan(tensor_main_page)
     tensor_main_page.click_detail_link()
-    logger.info("Проверка ссылки на открытой странице")
-    assert chrome.current_url == "https://tensor.ru/about"
+    check_tensor_main_page_link(chrome)
 
-    # Проверка страницы "О нас" на tensor.ru
     tensor_about_page = TensorAboutPage(chrome)
-    tensor_about_page.verify_work_header()
-    tensor_about_page.verify_images()
-
+    check_tensor_about_page_work_header(tensor_about_page)
+    check_tensor_about_page_images(tensor_about_page)

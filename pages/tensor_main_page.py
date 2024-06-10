@@ -20,9 +20,9 @@ class TensorMainPage(BasePage):
         assert element.is_displayed()
         assert element.text == "Сила в людях"
 
-    @allure.step("Клик по ссылке для получения дополнительной информации")
+    @allure.step("Клик по ссылке 'Подробнее'")
     def click_detail_link(self):
-        logger.info("Клик по ссылке для получения дополнительной информации")
+        logger.info("Клик по ссылке 'Подробнее'")
         link = self.wait_for_element(*TensorMainPageLocators.DETAIL_LINK)
         assert link.is_displayed()
         link.click()
