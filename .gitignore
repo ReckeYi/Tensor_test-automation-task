@@ -1,5 +1,6 @@
-/.venv/
 .idea
 .idea/
 /.idea/
 /.idea/Tenzor.iml
+/.venv/
+.gitignore

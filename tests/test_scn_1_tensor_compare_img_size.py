@@ -1,49 +1,25 @@
-import logging
-import requests
-import tempfile
-import os
-
-from pages.sbis_download_page import SbisDownloadPage
-from pages.sbis_main_page import SbisMainPage
-
-logger = logging.getLogger(__name__)
+import allure
+from pages.sbis_contacts_page import SbisContactsPage
+from pages.tensor_about_page import TensorAboutPage
+from pages.tensor_main_page import TensorMainPage
 
 
-def test_download_page(chrome):
-    sbis_main_page = SbisMainPage(chrome)
-    sbis_main_page.open()
-    logger.info("Открыта страница https://sbis.ru/")
+@allure.feature("Размер изображений")
+@allure.story("Сравнение размеров изображений")
+def test_tensor_functionality(chrome):
+    sbis_contacts_page = SbisContactsPage(chrome)
+    sbis_contacts_page.open()
+    sbis_contacts_page.click_tensor_banner()
+    chrome.switch_to.window(chrome.window_handles[1])
+    assert "tensor.ru" in chrome.current_url
 
-    sbis_main_page.click_download_link()
-    logger.info("Нажата ссылка для скачивания")
+    tensor_main_page = TensorMainPage(chrome)
+    tensor_main_page.verify_slogan()
+    tensor_main_page.click_detail_link()
+    assert chrome.current_url == "https://tensor.ru/about"
 
+    # Проверка страницы "О нас" на tensor.ru
+    tensor_about_page = TensorAboutPage(chrome)
+    tensor_about_page.verify_work_header()
+    tensor_about_page.verify_images()
 
-def test_element(chrome):
-    sbis_download_page = SbisDownloadPage(chrome)
-    sbis_download_page.open()
-    logger.info("Открыта страница https://sbis.ru/download")
-
-    sbis_download_page.click_plugin_element()
-    logger.info("Клик по элементу 'СБИС Плагин'")
-
-    sbis_download_page.click_windows_button()
-    logger.info("Клик по кнопке 'Windows'")
-
-    sbis_download_page.verify_windows_element()
-    logger.info("Проверка элемента Windows")
-
-    file_url = "https://update.sbis.ru/Sbis3Plugin/master/win32/sbisplugin-setup-web.exe"
-    file_name = "sbisplugin-setup-web.exe"
-    response = requests.get(file_url)
-    assert response.status_code == 200
-    logger.info(f"Запрос к файлу {file_url} выполнен успешно")
-
-    temp_dir = tempfile.gettempdir()
-    file_path = os.path.join(temp_dir, file_name)
-
-    with open(file_path, 'wb') as f:
-        f.write(response.content)
-    logger.info(f"Файл {file_name} успешно скачан и сохранен в {temp_dir}")
-
-    assert os.path.exists(file_path)
-    logger.info(f"Проверка существования файла {file_name}: успешно")
