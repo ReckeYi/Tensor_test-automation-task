@@ -6,6 +6,11 @@ from .base_page import BasePage
 from .checkout_pages.check_sbis_contacts_page import *
 from .locators.sbis_contacts_page_locators import SbisContactsPageLocators
 
+
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 logger = logging.getLogger(__name__)
 
 
@@ -22,51 +27,40 @@ class SbisContactsPage(BasePage):
         check_element_displayed(banner, "Tensor banner is not displayed")
         banner.click()
 
-    @allure.step("Проверка наличия элемента региона")
-    def verify_region_element(self):
-        logger.info("Проверка наличия элемента региона")
-        region_element = self.wait_for_element(*SbisContactsPageLocators.REGION_ELEMENT)
-        check_element_displayed(region_element, "Region element is not displayed")
-        return region_element
+    def get_region_element(self):
+        return self.driver.find_element(By.XPATH,
+                                        '//*[@id="container"]/div[1]/div/div[3]/div[2]/div[1]/div/div[2]/span/span')
 
-    @allure.step("Получение текста списка партнеров")
-    def get_partners_list_text(self):
-        logger.info("Получение текста списка партнеров")
-        partners_list_element = self.wait_for_element(*SbisContactsPageLocators.PARTNERS_LIST_ELEMENT)
-        check_element_displayed(partners_list_element, "Partners list element is not displayed")
-        return partners_list_element.text
+    def get_partners_list_element(self):
+        return self.driver.find_element(By.XPATH, '//*[@id="contacts_list"]/div/div[2]')
 
-    @allure.step("Клик по элементу региона")
-    def click_region_element(self, region_element):
-        logger.info("Клик по элементу региона")
-        region_element.click()
-        self.wait_for_element(*SbisContactsPageLocators.REGION_LIST)
+    def click_region_element(self):
+        self.get_region_element().click()
 
-    @allure.step("Выбор региона 'Камчатский край'")
-    def select_kamchatka_region(self):
-        logger.info("Выбор региона 'Камчатский край'")
-        kamchatka_region = self.wait_for_element(*SbisContactsPageLocators.KAMCHATKA_REGION)
-        kamchatka_region.click()
-
-    @allure.step("Ожидание изменения текста списка партнеров")
-    def wait_for_partners_list_to_change(self, initial_text):
-        WebDriverWait(self.driver, 10).until(
-            lambda driver: self.get_partners_list_text() != initial_text
+    def select_region(self, region_name):
+        region_list = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, 'ul.sbis_ru-Region-Panel__list-l'))
         )
 
-    @allure.step("Проверка измененного региона")
-    def verify_changed_region(self):
-        logger.info("Проверка измененного региона")
-        changed_region = self.wait_for_element(*SbisContactsPageLocators.CHANGED_REGION)
-        check_element_displayed(changed_region, "Changed region element is not displayed")
-        return changed_region
+        region = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH,
+                                        f'//*[@id="popup"]/div[2]/div/div/div/div/div[2]/div/ul/li/span/span[contains(text(), "{region_name}")]'))
+        )
+        region.click()
 
-    @allure.step("Проверка, что URL страницы содержит текст")
-    def verify_url_contains(self, text):
-        logger.info(f"Проверка, что URL страницы содержит текст: {text}")
-        check_url_contains(self.driver, text, f"Expected '{text}' to be in URL")
+    def get_changed_region_element(self):
+        return WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH,
+                                              '//*[@id="container"]/div[1]/div/div[3]/div[2]/div[1]/div/div[2]/span/span'))
+        )
 
-    @allure.step("Проверка заголовка страницы")
-    def verify_page_title(self, expected_title):
-        logger.info(f"Проверка заголовка страницы: ожидаемый заголовок {expected_title}")
-        check_page_title(self.driver, expected_title, f"Expected page title to be '{expected_title}'")
+    def get_current_url(self):
+        return self.driver.current_url
+
+    def get_title(self):
+        return self.driver.title
+
+    def wait_for_partners_list_to_change(self, partners_list_step1):
+        WebDriverWait(self.driver, 10).until(
+            lambda driver: self.get_partners_list_element().text != partners_list_step1
+        )
