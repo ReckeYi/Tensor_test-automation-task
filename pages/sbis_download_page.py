@@ -9,6 +9,7 @@ from pages.locators.sbis_download_page_locators import SbisDownloadPageLocators
 
 logger = logging.getLogger(__name__)
 
+
 class SbisDownloadPage(BasePage):
     @allure.step("Клик по элементу 'СБИС Плагин'")
     def click_plugin_element(self):

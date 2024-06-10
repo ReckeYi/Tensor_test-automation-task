@@ -5,6 +5,7 @@ from pages.locators.sbis_main_page_locators import SbisMainPageLocators
 
 logger = logging.getLogger(__name__)
 
+
 class SbisMainPage(BasePage):
     @allure.step("Открытие главной страницы https://sbis.ru")
     def open(self):

@@ -1,5 +1,10 @@
+import logging
+
 import allure
 from pages.sbis_contacts_page import SbisContactsPage
+
+
+logger = logging.getLogger(__name__)
 
 
 @allure.feature("Регионы")
@@ -19,4 +24,5 @@ def test_tensor_region(chrome):
 
     sbis_contacts_page.wait_for_partners_list_to_change(partners_list_step1)
     partners_list_step2 = sbis_contacts_page.get_partners_list_text()
+    logger.info("Сравнение списка партненров")
     assert partners_list_step1 != partners_list_step2

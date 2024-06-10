@@ -5,6 +5,7 @@ from .locators.tensor_main_page_locators import TensorMainPageLocators
 
 logger = logging.getLogger(__name__)
 
+
 class TensorMainPage(BasePage):
     # @allure.step("Открытие главной страницы https://tensor.ru/")
     # def open(self):
