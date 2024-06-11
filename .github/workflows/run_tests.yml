@@ -1,4 +1,4 @@
-name: Tenzor tests
+name: Tenzor_tests
 
 on:
   workflow_dispatch:
