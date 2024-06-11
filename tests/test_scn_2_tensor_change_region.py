@@ -1,10 +1,10 @@
-import time
-
-from pages.checkout_pages.check_sbis_contacts_page import *
 from pages.sbis_contacts_page import SbisContactsPage
+from tests.checkouts.check_sbis_contacts_page import *
 from utilites.constants import *
 
 
+@allure.feature("Проверка региона на странице контактов")
+@allure.story("Сравнение региона и списка партнеров")
 def test_tensor_region(chrome):
     sbis_contacts_page = SbisContactsPage(chrome)
     sbis_contacts_page.open()

@@ -1,11 +1,10 @@
 import logging
 import allure
-from selenium.webdriver.support.wait import WebDriverWait
 
-from .base_page import BasePage
-from .checkout_pages.check_sbis_contacts_page import *
-from .locators.sbis_contacts_page_locators import SbisContactsPageLocators
-
+from pages.base_page import BasePage
+from pages.locators.sbis_contacts_page_locators import SbisContactsPageLocators
+from tests.checkouts.check_sbis_contacts_page import check_element_displayed
+from utilites.constants import *
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -15,34 +14,39 @@ logger = logging.getLogger(__name__)
 
 
 class SbisContactsPage(BasePage):
-    @allure.step("Открытие страницы https://sbis.ru/contacts")
     def open(self):
-        logger.info("Открытие страницы https://sbis.ru/contacts")
-        self.driver.get("https://sbis.ru/contacts")
+        logger.info("Открытие страницы Сбис Контакты")
+        self.open_page(SBIS_CONTACTS)
 
+    @allure.step("Клик по баннеру 'Тензор'")
     def click_tensor_banner(self):
         logger.info("Клик по баннеру 'Тензор'")
         banner = self.wait_for_element(*SbisContactsPageLocators.TENSOR_BANNER)
-        check_element_displayed(banner, "Tensor banner is not displayed")
+        check_element_displayed(banner, "Баннер 'Тензор' не отображается")
         banner.click()
-        # Ждем, пока появится новая вкладка
         WebDriverWait(self.driver, 10).until(EC.number_of_windows_to_be(2))
-        # Переключаемся на новую вкладку
         self.driver.switch_to.window(self.driver.window_handles[1])
 
+    @allure.step("Получение элемента региона")
     def get_region_element(self):
-        return self.driver.find_element(By.XPATH,
-                                        '//*[@id="container"]/div[1]/div/div[3]/div[2]/div[1]/div/div[2]/span/span')
+        logger.debug("Получение элемента региона")
+        return self.driver.find_element(*SbisContactsPageLocators.REGION_ELEMENT)
 
+    @allure.step("Получение элемента списка партнеров")
     def get_partners_list_element(self):
-        return self.driver.find_element(By.XPATH, '//*[@id="contacts_list"]/div/div[2]')
+        logger.debug("Получение элемента списка партнеров")
+        return self.driver.find_element(*SbisContactsPageLocators.PARTNERS_LIST_ELEMENT)
 
+    @allure.step("Клик по элементу региона")
     def click_region_element(self):
+        logger.info("Клик по элементу региона")
         self.get_region_element().click()
 
+    @allure.step("Выбор региона: {region_name}")
     def select_region(self, region_name):
+        logger.info(f"Выбор региона: {region_name}")
         region_list = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, 'ul.sbis_ru-Region-Panel__list-l'))
+            EC.visibility_of_element_located(SbisContactsPageLocators.REGION_LIST)
         )
 
         region = WebDriverWait(self.driver, 10).until(
@@ -51,19 +55,26 @@ class SbisContactsPage(BasePage):
         )
         region.click()
 
+    @allure.step("Получение измененного элемента региона")
     def get_changed_region_element(self):
+        logger.debug("Получение измененного элемента региона")
         return WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH,
-                                              '//*[@id="container"]/div[1]/div/div[3]/div[2]/div[1]/div/div[2]/span/span'))
+            EC.visibility_of_element_located(SbisContactsPageLocators.REGION_ELEMENT)
         )
 
+    @allure.step("Получение текущего URL")
     def get_current_url(self):
+        logger.debug("Получение текущего URL")
         return self.driver.current_url
 
+    @allure.step("Получение заголовка страницы")
     def get_title(self):
+        logger.debug("Получение заголовка страницы")
         return self.driver.title
 
+    @allure.step("Ожидание изменения списка партнеров")
     def wait_for_partners_list_to_change(self, partners_list_step1):
+        logger.debug("Ожидание изменения списка партнеров")
         WebDriverWait(self.driver, 10).until(
             lambda driver: self.get_partners_list_element().text != partners_list_step1
         )
@@ -72,6 +83,6 @@ class SbisContactsPage(BasePage):
     def click_detail_link(self):
         logger.info("Клик по ссылке 'Подробнее'")
         link = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, '//a[text()="Подробнее"]'))
+            EC.element_to_be_clickable(SbisContactsPageLocators.DETAILS)
         )
         link.click()

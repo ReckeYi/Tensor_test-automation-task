@@ -6,3 +6,4 @@
 .gitignore
 /allure-results/
 /.pytest_cache/
+/tests/.pytest_cache/
