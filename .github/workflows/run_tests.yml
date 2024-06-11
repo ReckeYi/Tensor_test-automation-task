@@ -6,7 +6,7 @@ on:
       deployment_target:
         description: Choose target
         required: true
-        default: second_test
+        default: all
         type: choice
         options:
           - first_test
