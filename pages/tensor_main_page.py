@@ -1,4 +1,6 @@
 import logging
+import time
+
 import allure
 from .base_page import BasePage
 from .locators.tensor_main_page_locators import TensorMainPageLocators
@@ -26,3 +28,6 @@ class TensorMainPage(BasePage):
         link = self.wait_for_element(*TensorMainPageLocators.DETAIL_LINK)
         assert link.is_displayed()
         link.click()
+
+    def wait_content(self):
+        time.sleep(1)
