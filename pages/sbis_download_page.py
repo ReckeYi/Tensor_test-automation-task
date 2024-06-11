@@ -1,22 +1,17 @@
 import os
 import requests
 import tempfile
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import logging
 
+from pages.locators.sbis_download_page_locators import *
+from utilites.constants import *
+
 logger = logging.getLogger(__name__)
 
 class SBISDownloadPage:
-    DOWNLOAD_LINK = (By.LINK_TEXT, "Скачать локальные версии")
-    PLUGIN_ELEMENT = (By.XPATH, '(//div[contains(text(), "СБИС Плагин")])[1]')
-    WINDOWS_BUTTON = (By.XPATH, '//span[contains(text(), "Windows")]')
-    WINDOWS_ELEMENT = (By.XPATH, '//span[@class="sbis_ru-DownloadNew-innerTabs__title sbis_ru-DownloadNew-innerTabs__title--default"]')
-
-    FILE_URL = "https://update.sbis.ru/Sbis3Plugin/master/win32/sbisplugin-setup-web.exe"
-    FILE_NAME = "sbisplugin-setup-web.exe"
 
     def __init__(self, driver):
         self.driver = driver
@@ -27,33 +22,22 @@ class SBISDownloadPage:
 
     def click_download_link(self):
         logger.info("Clicking on download link")
-        download_link = self.driver.find_element(*self.DOWNLOAD_LINK)
+        download_link = self.driver.find_element(*SbisDownloadPageLocators.DOWNLOAD_LINK)
         self.driver.execute_script("arguments[0].scrollIntoView(true);", download_link)
         download_link.click()
 
     def click_plugin_element(self):
         logger.info("Clicking on plugin element")
-        plugin_element = self.driver.find_element(*self.PLUGIN_ELEMENT)
+        plugin_element = self.driver.find_element(*SbisDownloadPageLocators.PLUGIN_ELEMENT)
         self.mouse_click(plugin_element)
-
-    def click_windows_button(self):
-        logger.info("Clicking on Windows button")
-        windows_button = self.driver.find_element(*self.WINDOWS_BUTTON)
-        self.mouse_click(windows_button)
-
-    def wait_for_windows_element(self):
-        logger.info("Waiting for Windows element to be visible")
-        return WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located(self.WINDOWS_ELEMENT)
-        )
 
     def download_file(self):
         logger.info("Downloading file from URL")
-        response = requests.get(self.FILE_URL)
+        response = requests.get(FILE_URL)
         assert response.status_code == 200, "Failed to download the file"
 
         temp_dir = tempfile.gettempdir()
-        file_path = os.path.join(temp_dir, self.FILE_NAME)
+        file_path = os.path.join(temp_dir, FILE_NAME)
 
         with open(file_path, 'wb') as f:
             f.write(response.content)
@@ -69,3 +53,9 @@ class SBISDownloadPage:
         logger.info("Performing mouse click on element")
         actions = ActionChains(self.driver)
         actions.move_to_element(element).click().perform()
+
+    def wait_for_plugin_element(self):
+        logger.info("Waiting for plugin element to be visible")
+        WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located(SbisDownloadPageLocators.PLUGIN_ELEMENT)
+        )

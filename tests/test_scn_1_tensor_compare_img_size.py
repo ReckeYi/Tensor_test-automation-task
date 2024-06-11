@@ -1,3 +1,5 @@
+import time
+
 import allure
 
 from pages.checkout_pages.check_tensor_about_page import *
@@ -20,7 +22,6 @@ def test_tensor_functionality(chrome):
     check_tensor_main_page_slogan(tensor_main_page)
     tensor_main_page.click_detail_link()
     check_tensor_main_page_link(chrome)
-
     tensor_about_page = TensorAboutPage(chrome)
     check_tensor_about_page_work_header(tensor_about_page)
     check_tensor_about_page_images(tensor_about_page)

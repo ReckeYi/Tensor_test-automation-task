@@ -20,12 +20,15 @@ class SbisContactsPage(BasePage):
         logger.info("Открытие страницы https://sbis.ru/contacts")
         self.driver.get("https://sbis.ru/contacts")
 
-    @allure.step("Клик по баннеру 'Тензор'")
     def click_tensor_banner(self):
         logger.info("Клик по баннеру 'Тензор'")
         banner = self.wait_for_element(*SbisContactsPageLocators.TENSOR_BANNER)
         check_element_displayed(banner, "Tensor banner is not displayed")
         banner.click()
+        # Ждем, пока появится новая вкладка
+        WebDriverWait(self.driver, 10).until(EC.number_of_windows_to_be(2))
+        # Переключаемся на новую вкладку
+        self.driver.switch_to.window(self.driver.window_handles[1])
 
     def get_region_element(self):
         return self.driver.find_element(By.XPATH,
@@ -64,3 +67,11 @@ class SbisContactsPage(BasePage):
         WebDriverWait(self.driver, 10).until(
             lambda driver: self.get_partners_list_element().text != partners_list_step1
         )
+
+    @allure.step("Клик по ссылке 'Подробнее'")
+    def click_detail_link(self):
+        logger.info("Клик по ссылке 'Подробнее'")
+        link = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//a[text()="Подробнее"]'))
+        )
+        link.click()
