@@ -44,7 +44,7 @@ class SbisContactsPage(BasePage):
 
         region = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.XPATH,
-                                        f'//*[@id="popup"]/div[2]/div/div/div/div/div[2]/div/ul/li/span/span[contains(text(), "{region_name}")]'))
+                                        f'{SbisContactsPageLocators.REGION}, "{region_name}")]'))
         )
         region.click()
 
