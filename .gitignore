@@ -1,9 +1,0 @@
-.idea
-.idea/
-/.idea/
-/.idea/Tenzor.iml
-/.venv/
-.gitignore
-/allure-results/
-/.pytest_cache/
-/tests/.pytest_cache/
